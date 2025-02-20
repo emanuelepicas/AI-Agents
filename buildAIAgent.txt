@@ -1,0 +1,43 @@
+===== Build Queued at 2025-02-12 21:28:42 / Commit SHA: 347b472 =====
+
+--> FROM docker.io/library/python:3.10@sha256:76f22e4ce53774c1f5eb0ba145edb57b908e7aa329fee75eca69b511c1d0cd8a
+DONE 0.0s
+
+--> WORKDIR /home/user/app
+CACHED
+
+--> COPY --chown=1000:1000 --from=root / /
+CACHED
+
+--> RUN apt-get update && apt-get install -y 	git 	git-lfs 	ffmpeg 	libsm6 	libxext6 	cmake 	rsync 	libgl1-mesa-glx 	&& rm -rf /var/lib/apt/lists/* 	&& git lfs install
+CACHED
+
+--> RUN pip install --no-cache-dir pip -U && 	pip install --no-cache-dir 	datasets 	"huggingface-hub>=0.19" "hf-transfer>=0.1.4" "protobuf<4" "click<8.1" "pydantic~=1.0"
+CACHED
+
+--> RUN 	apt-get update && 	apt-get install -y curl && 	curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && 	apt-get install -y nodejs && 	rm -rf /var/lib/apt/lists/* && apt-get clean
+CACHED
+
+--> RUN --mount=target=/tmp/requirements.txt,source=requirements.txt     pip install --no-cache-dir -r /tmp/requirements.txt
+CACHED
+
+--> RUN apt-get update && apt-get install -y fakeroot &&     mv /usr/bin/apt-get /usr/bin/.apt-get &&     echo '#!/usr/bin/env sh\nfakeroot /usr/bin/.apt-get $@' > /usr/bin/apt-get &&     chmod +x /usr/bin/apt-get && 	rm -rf /var/lib/apt/lists/* && 	useradd -m -u 1000 user
+CACHED
+
+--> RUN pip freeze > /tmp/freeze.txt
+CACHED
+
+--> RUN pip install --no-cache-dir 	gradio[oauth]==5.15.0 	"uvicorn>=0.14.0" 	spaces
+CACHED
+
+--> COPY --link --chown=1000 ./ /home/user/app
+DONE 0.0s
+
+--> COPY --from=pipfreeze --link --chown=1000 /tmp/freeze.txt /tmp/freeze.txt
+DONE 0.0s
+
+--> Pushing image
+DONE 0.8s
+
+--> Exporting cache
+DONE 0.8s
